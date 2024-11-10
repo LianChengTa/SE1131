@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'style_for_personal_page.css' %}">
+    <title>個人資料修改</title>
+</head>
+<body>
+    <h2>個人資料修改</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">提交修改</button>
+    </form>
+    <div class="register-link">
+        <p>需要修改密碼？<a href="{% url 'password_edit' %}">點此修改密碼</a></p>
+        <p>修改完成？<a href="{% url 'get_main_page' %}">回到首頁</a></p>
+    </div>
+</body>
+</html>

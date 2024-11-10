@@ -1,0 +1,205 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTOU Event Registration Site</title>
+    <style>
+        p   {
+            text-align: center;
+        }
+
+        body{
+            font-style: Helvetica;
+            font-size: 2em;
+            margin: 0px;
+        }
+
+        input{
+            height:1.75em;
+            margin-left: 5px;
+        }
+        
+        .event {
+            font-family: inherit;
+            background-color: lightblue;
+            font-size: 1em;
+            width: 99%;
+            text-align: left;
+            margin-top: 5px;
+            margin-bottom: 2.5px;
+            margin-left: 5px;
+            
+        }
+
+        .event > img{
+            float: left;
+            margin:5px;
+        }
+
+        .header{
+            width:100%;
+            color:white;
+            background-color: #313f48;
+            padding: 20px;
+        }
+
+        @media only screen and (max-width: 600px){
+            .event {
+            font-family: inherit;
+            background-color: lightblue;
+            font-size: 1em;
+            width: 99%;
+
+            }
+            .event > img{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                float:none;
+                padding: 5px;
+                }
+
+            input{
+            height:1.75em;
+            display:block;
+            margin-top:5px;
+            margin-left:auto;
+            margin-right:auto;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class = "header">
+        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
+        <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
+        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
+        <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
+        <p>NTOU Event Registration Website</p>    
+    </div>
+    <div>
+        <input type = "text" placeholder = "search for event...">
+        <button>Search!</button>
+    </div>
+    <div>
+            <button class = "event" id="event{1}" >
+                <img src = "{% static '150x150.png' %}" alt = "event image">
+                <div>Event Title: Football Festival</div>
+                <div>Event Date: 31.11.2024</div>
+                <div>Venue: NTOU Field</div>
+            </button>
+    </div>
+    <div>
+            <button class = "event" id="event2">
+                <img src = "{% static '150x150.png'%}" alt = "event image">
+                <div>Event Title: Volleyball Festival</div>
+                <div>Event Date:31.11.2024</div>
+                <div>Venue: NTOU Indoor Court</div>
+            </button>
+    </div>
+
+    <script>
+        let eventBtns = document.querySelectorAll('.event');
+
+        eventBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                get_event_page();
+            });
+        });
+
+        let isFetching = false;////////置頂，重要的參數
+        //////////////////////置頂
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        /////////////////////置頂，重要function
+
+        function logout_func() {////////////////登出函數在此
+            if (isFetching) return;
+            isFetching = true;
+
+
+            fetch('/webpage/logout/', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                isFetching = false; 
+                if (response.ok) {
+                    window.location.href = '/webpage/login/';
+                } else {
+                    console.error('Failed to logout');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+
+        function profile_edit(){///////////獲取更改個人資料頁面的函數
+            if (isFetching) return; // 如果已经有请求在处理中，直接返回
+            isFetching = true;
+
+            fetch('/webpage/profile_edit/', {
+                method: 'GET', // 默认是GET请求
+            })
+            .then(response => {
+                isFetching = false; // 请求结束后将标记恢复为false
+                if (response.ok) {
+                    window.location.href = '/webpage/profile_edit/';
+                } else {
+                    console.error('Failed to fetch profile_edit page');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+
+        function get_event_page() {//////////獲取每個活動頁面的函數
+            if (isFetching) return; // 如果已经有请求在处理中，直接返回
+            isFetching = true;
+
+            fetch('/webpage/detail/', {
+                method: 'GET', // 默认是GET请求
+            })
+            .then(response => {
+                isFetching = false; // 请求结束后将标记恢复为false
+                if (response.ok) {
+                    // 如果服务器返回200状态码，则执行页面跳转
+                    window.location.href = '/webpage/detail/';
+                } else {
+                    console.error('Failed to fetch detail page');
+                }
+            })
+            .catch(error => {
+                isFetching = false; // 如果出现错误，也将标记恢复为false
+                console.error('Error:', error);
+            });
+        }
+
+
+    </script>
+
+
+</body>
+</html>
