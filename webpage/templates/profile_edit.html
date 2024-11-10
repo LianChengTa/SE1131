@@ -5,17 +5,56 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{% static 'style_for_personal_page.css' %}">
     <title>個人資料修改</title>
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;   
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+
+        .container{
+            background-color:#ffffff;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+            padding:18px;
+            width: 500px;
+            text-align:center;
+            margin-top:2%;
+            
+        }
+        input[type="text"]{
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        @media (max-width: 400px) {
+            .container {
+                width: 100%;
+                margin: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>個人資料修改</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">提交修改</button>
-    </form>
-    <div class="register-link">
-        <p>需要修改密碼？<a href="{% url 'password_edit' %}">點此修改密碼</a></p>
-        <p>修改完成？<a href="{% url 'get_main_page' %}">回到首頁</a></p>
+    <div class = "container">
+        <h2>個人資料修改</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">提交修改</button>
+        </form>
+        <div class="register-link">
+            <p>需要修改密碼？<a href="{% url 'password_edit' %}">點此修改密碼</a></p>
+            <p>修改完成？<a href="{% url 'get_main_page' %}">回到首頁</a></p>
+        </div>
     </div>
 </body>
 </html>
