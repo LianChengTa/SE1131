@@ -103,6 +103,19 @@ register對應到上面urls.py的register path。
 
 所以最後的資料庫會長這樣，有個自己創建的user_account的table（因爲在django中它是under一個叫webpage的app，所以系統命名為webpage_user_account，實際使用可以忽略名稱問題...應該），裏面有從AbstactUser繼承的各種column，還有自己添加的studentid
 
+重要！！！！！！！！！！：
+
+只要有對model.py做任何的修改，都需要執行makemigrations然後migrate，這個的概念有點像github中的commit and push，一個是建立映像文件，説明做了什麽樣的更動，一個是實際執行變更，整個資料庫就會根據models.py做改動。
+
+![{00402CE3-237E-4EA3-94A3-B75F0E6D3193}](https://github.com/user-attachments/assets/5fc60de2-055a-44a0-993a-d3b509067e87)
+
+如果不能更改，就會出現一些錯誤訊息，再google看看怎麽解決就好。
+
+
+
+
+
+
 
 
 
