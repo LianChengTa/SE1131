@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="icon" href="{% static 'favicon.ico' %}">
-    <title>NTOU 海洋大學活動報名系統 注冊帳號</title>
+    <title>NTOU 海洋大學活動報名系統 加活動</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
@@ -125,8 +125,23 @@
             margin-bottom:5px;
             font-size:17px; 
             color:#333;
-            margin-left:-280px;
+            margin-left:-240px;
             font-weight:normal;
+        }
+
+        .register-form .description{
+            width: 135%;
+            padding: 10px; 
+            font-size: 16px; 
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none; 
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom:15px;
+            height:80px;
+            margin-left:65px;
+            resize: vertical;
+
         }
 
         .register-form input{
@@ -142,6 +157,7 @@
             margin-left:65px;
 
         }
+        
 
         .register-form input:focus{
             outline:none;
@@ -237,37 +253,38 @@
     <div class="register-container">
     <div class="header">
     
-    <h2 class="registerh2">建立新帳號</h2>
+    <h2 class="registerh2">加活動</h2>
     <div class="underline"></div>
-
-    <form class="register-form" action="{% url 'register' %}" method="POST">
-        
-    <label for="username">帳號/Account</label>
-    <input type='text' id="username" name="username" placeholder="請輸入你的帳號" required/>
-
-    <label for="studentID">學號/StudentID</label>
-    <input type="text" id="studentid" name="studentid" placeholder="請輸入你的學號"required/>
-
-    <label for="Firstname" style="margin-left:-90%;" class="Firstname">姓名/Name</label>
-    <input type="text" id="Firstname" name="first_name" placeholder="請輸入你的姓名" required/>
-
-    <label for="Password1"style="margin-left:-80%";>密碼/Password</label>
-    <input type='password' id="Password1" name="password1" placeholder="請輸入你的密碼" required/>
-
-    <label for="Password2"style="margin-left:-53%;">確認密碼/Confirm Password</label>
-    <input type='password' id="Password2" name="password2" placeholder="請輸入你的密碼" required/>
-
-
-    {% if form.errors %}
-        <div class="form-errors">
-            {{ form.errors }}
-        </div>
-    {% endif %}
-    <div class="button-container">
-    <button class="registerbutton">註冊</button>
-    <button class="cancelbutton" onclick="window.location.href='{% url 'login' %}'">取消</button>
     
-    </div>
+    {% comment %} url add_event {% endcomment %}
+    <form class="register-form" action="{% url 'add_event' %}" method="POST">
+        
+        <label>活動題目/Event Title</label>
+        {% comment %} use name = "title" for the name in the database {% endcomment %}
+        <input type='text' name="title" placeholder="請輸入活動題目" required/>
+
+        <label style="margin-left:-55%";>活動説明/Event Description</label>
+        <textarea class="description" name="description" placeholder="請輸入活動説明" required/></textarea>
+
+        <label style="margin-left:-65%;" class="Firstname">活動地址/Event Venue</label>
+        <input type="text" name="venue" placeholder="請輸入活動地址" required/>
+
+        <label>活動時間/Event Date</label>
+        <input type="date" name="event_date" placeholder="請輸入活動時間"required/>
+
+        <label style="margin-left:-46%;">報名期限/Registration Deadline</label>
+        <input type="date" name="registration_deadline" placeholder="請輸入活動時間"required/>
+
+
+        {% if form.errors %}
+            <div class="form-errors">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        <div class="button-container">
+            <button class="registerbutton" type="submit">確認</button>
+            <button class="cancelbutton" onclick="window.location.href='{% url 'get_main_page' %}'">取消</button>
+        </div>
     </form>
     </div>
 </div>

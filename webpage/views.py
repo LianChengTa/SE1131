@@ -1,14 +1,16 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect ,get_object_or_404 #to get data from database from specific id
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .forms import loginform,registerform,profile_edit_form,password_edit_form
+from .forms import loginform,registerform,profile_edit_form,password_edit_form,add_event_form
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import PasswordChangeView
+#added from .models
+from .models import add_event
 
 
 @csrf_exempt
@@ -53,6 +55,19 @@ def register_page(request):
 
     return render(request, 'register.html', {'form': form})
 
+#get_add_event
+@csrf_exempt
+def get_add_event(request):
+    if request.method == 'POST':
+        form = add_event_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('get_main_page')  # Redirect after saving
+    else:
+        form = add_event_form()
+
+    return render(request, 'add_event.html', {'form': form})
+
 @login_required
 @csrf_exempt
 def get_profile_edit(request):
@@ -75,13 +90,13 @@ class password_edit(LoginRequiredMixin,PasswordChangeView):
 @login_required
 @csrf_exempt
 def get_main_page(request):
-    return render(request,'homepage.html')
+    events = add_event.objects.all()
+    return render(request,'homepage.html', {'events': events})
 
 
 @login_required
 @csrf_exempt
-def get_event_detail(request):
+def get_event_detail(request, event_id):
+    event = get_object_or_404(add_event, pk=event_id)
 
-
-    
-    return render(request,'eventDetails.html')
+    return render(request,'eventDetails.html', {'event': event})

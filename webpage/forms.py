@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm,UserChangeForm,PasswordChangeForm
-from .models import user_account
+from .models import user_account, add_event
 
 
 class loginform(AuthenticationForm):
@@ -15,8 +15,6 @@ class loginform(AuthenticationForm):
         if not password:
             raise forms.ValidationError("密碼不能为空。")
         return password
-
-
 
 
 
@@ -57,3 +55,14 @@ class password_edit_form(PasswordChangeForm):
         label="確認新密碼", 
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'})
     )
+
+class add_event_form(forms.ModelForm):
+    class Meta:
+        model = add_event
+        fields = ['title', 'description', 'venue', 'event_date', 'registration_deadline']
+        widgets = {
+            'event_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'registration_deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+    

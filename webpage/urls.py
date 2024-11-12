@@ -24,8 +24,9 @@ urlpatterns = [
     path('login/',views.login_page,name='login'),
     path('register/',views.register_page,name='register'),
     path('mainpage/',views.get_main_page,name='get_main_page'),
-    path('detail/',views.get_event_detail,name='detail'),
+    path('detail/<int:event_id>/',views.get_event_detail,name='detail'),
     path('logout/',LogoutView.as_view(next_page='login'),name='logout'),
     path('password_edit/',password_edit.as_view(),name="password_edit"),
     path('profile_edit/',views.get_profile_edit,name='profile_edit'),
+    path('add_event/',views.get_add_event, name='add_event')
 ]

@@ -76,6 +76,9 @@
     <div class = "header">
         <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
         <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
+        {% comment %} added button for add event {% endcomment %}
+        <button class="profile_button" onclick="add_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">加活動</button>
+        {% comment %}  {% endcomment %}
         <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
         <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
         <p>NTOU Event Registration Website</p>    
@@ -99,6 +102,19 @@
                 <div>Event Date:31.11.2024</div>
                 <div>Venue: NTOU Indoor Court</div>
             </button>
+    </div>
+    {% comment %} Output from database {% endcomment %}
+    <div>
+        {% for event in events %}
+            <a href="{% url 'detail' event.id %}">
+                <button class = "event" id="event{{ event.id }}" >
+                    <img src = "{% static '150x150.png'%}" alt = "event image">
+                    <div>Event Title: {{event.title}}</div>
+                    <div>Event Date:{{event.event_date|date:"d/m/Y" }}</div>
+                    <div>Venue: {{event.venue}}</div>
+                </button>
+            </a>
+        {%endfor%}
     </div>
 
     <script>
@@ -193,6 +209,28 @@
             })
             .catch(error => {
                 isFetching = false; // 如果出现错误，也将标记恢复为false
+                console.error('Error:', error);
+            });
+        }
+
+        {% comment %} add event function {% endcomment %}
+        function add_event(){///////////獲取更改個人資料頁面的函數
+            if (isFetching) return; // 如果已经有请求在处理中，直接返回
+            isFetching = true;
+
+            fetch('/webpage/add_event/', {
+                method: 'GET', // 默认是GET请求
+            })
+            .then(response => {
+                isFetching = false; // 请求结束后将标记恢复为false
+                if (response.ok) {
+                    window.location.href = '/webpage/add_event/';
+                } else {
+                    console.error('Failed to fetch add_event page');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
                 console.error('Error:', error);
             });
         }
