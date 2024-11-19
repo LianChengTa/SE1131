@@ -1,41 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-{% load static %}
+<!--{% load static %}-->
+<html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{% static 'style_for_personal_page.css' %}">
-    <title>個人資料修改</title>
+    <link rel="icon" type="icon" href="{% static 'favicon.ico' %}">
+    <title>NTOU 海洋大學活動報名系統    </title>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
         *{box-sizing:border-box;
                     margin:0;
                     padding:0;}
-        /* 確保span元素樣式與small一致 */
-        /* 設置 helptext 的樣式，並確保它對齊 */
-        #id_username_helptext {
-            font-size: 12px;
-            color: #6c757d; /* 淺灰色的文字 */
-            font-style: italic;
-            margin-top: 20px;
-            width: 50%; /* 與input框相同的寬度 */
-            display: block; /* 讓helptext變成block元素，換行並對齊input */
-            padding-left: 0; /* 確保helptext不會有內邊距 */
-        }
-
-        /* 當input為readonly時，將input框的樣式設置為不可編輯 */
-        #id_username[readonly] {
-            background-color: #e9ecef; /* 淺灰色背景，提示不可編輯 */
-            cursor: not-allowed; /* 更改游標為禁止狀態 */
-        }
-
-        /* 如果你想讓#id_username_helptext的顯示位置更突出一點，可以使用以下css */
-        #id_username_helptext {
-            display: block;
-            margin-top: 5px; /* 讓提示語與Input框保持一定間距 */
-            font-size: 12px;
-            color: #6c757d;
-        }
-
+                    
         body{
                 font-family: Arial,sans-serif;
             font-size: 2em;
@@ -45,7 +21,6 @@
             overflow:auto;
         }
 
-        
         .header{
             width:100%;
             display:flex;
@@ -54,12 +29,7 @@
             padding: 10px;
 
         }
-        .profile-form p {
-            width: 70%;
-            margin-bottom: 15px;
-            text-align: left;
-            margin-left: 350px;
-        }
+
         .header .title{
             font-family:Arial, Helvetica, sans-serif;
             font-weight:bold;
@@ -129,7 +99,7 @@
         }
         
 
-        .profileh2{
+        .registerh2{
             color:#1E3A78;
             margin-top:0px;
             font-weight:bold;
@@ -145,32 +115,30 @@
             margin-left:39%;
         }
 
-        .profile-container{
+        .register-container{
             background-color:#ffffff;
             margin:35px auto;
             border-radius:10px;
             box-shadow:0 0 10px rgba(0, 0, 0, 0.2);
             padding:35px 60px;
             width: 80%;
-            display:flex;
-            flex-direction: column;
             text-align:center;
             justify-content: space-between;
             height:auto;
             
         }
 
-        .profile-form{
+        .register-form{
             display:flex;
             padding:10px;
-            flex-direction:column;
+            flex-direction:row;
             align-items: center;
             max-width: 100%;
             margin-top:5px;
             
         }
 
-        .profile-form label{
+        .register-form label{
             width:70%;
             margin-bottom:5px;
             font-size:17px; 
@@ -181,7 +149,7 @@
             
         }
 
-        .profile-form .description{
+        .register-form .description{
             width: 70%;
             padding: 10px; 
             font-size: 16px; 
@@ -196,22 +164,22 @@
 
         }
 
-        .profile-form input{
-            width: 50%;
+        .register-form input{
+            width: 70%;
             padding: 10px; 
             font-size: 16px; 
             border-radius: 5px;
             border: 1px solid #ccc;
             outline: none; 
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom:5px;
+            margin-bottom:15px;
             height:43px;
             float:left;
            
         }
         
 
-        .profile-form input:focus{
+        .register-form input:focus{
             outline:none;
             box-shadow: 0 0 5px 2px rgba(102, 175, 233, 0.5); 
             border: 1px  solid #66afe9; 
@@ -225,7 +193,7 @@
 
         }
 
-        .profilebutton{
+        .registerbutton{
             
             padding:10px;
             background-color: #3b74ce;
@@ -290,65 +258,99 @@
             color: blue;
         }
 
-        .container {
-            display: flex;
-            justify-content: space-between; /* 控制子项之间的间距 */
-            align-items: flex-start; /* 对齐顶部 */
+        .image{
+            
         }
 
-        .container > div {
-            flex: 1; /* 设置子项的宽度 */
-            margin: 10px; /* 添加一些间距 */
+        .imageDiv{
+            background-color: pink;
+            width:25%;
+            float:right;
+            
         }
 
-        .imageDiv {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .imageDiv img {
-            max-width: 100%; /* 确保图片不会超出容器 */
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .profile-form div {
-            width: 70%;
-            clear: both; /* 確保 helptext 跟 input 在同一列對齊 */
-        }
-        .profile-link {
-            font-size: 20px; /* 設定較小的字體大小 */
+        .register-form div{
+            width:70%;
         }
 
 
 
     </style>
 </head>
+
 <body>
 
     <div class = "header">
         <div class="logo"><img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" onclick="window.location.href='{% url 'get_main_page' %}'" style = "height:55px; width: 55px;"></div> 
-        <div class="title">Event Information </div><div class="chinese">活動資訊</div>
+        <div class="title">Event Application Form </div><div class="chinese">添加活動表</div>
         <div class="mainpage"><button class="profile_button" onclick="window.location.href='{% url 'get_main_page' %}'" >回到首頁</button></div> 
-        <!-- <div class="profile"><button class="profile_button" onclick="window.location.href = '/webpage/profile_edit/'" >修改個人資料</button></div>  -->
-        <div class="logout"><button class="profile_button" onclick="window.location.href = '/webpage/login/'" >登出</button></div>
+        <div class="profile"><button class="profile_button" onclick="profile_edit()" >修改個人資料</button></div> 
+        <div class="logout"><button class="profile_button" onclick="logout_func()" >登出</button></div>
         
-    </div>  
+    </div>    
 
-    <div class = "profile-container">
-        <h2>個人資料修改</h2>
+    <div class="register-container">
+    <h2 class="registerh2">添加活動表</h2>
+    <div class="underline"></div>
+    
+    <!--{% comment %} url add_event {% endcomment %}-->
+    <div>
+    <form class="register-form" action="{% url 'add_event' %}" method="POST">
+        <div>
+        <label>活動題目/Event Title</label>
+        <!--{% comment %} use name = "title" for the name in the database {% endcomment %}-->
+        <input type='text' name="title" placeholder="請輸入活動題目" required/>
 
+        <label>活動説明/Event Description</label>
+        <textarea class="description" name="description" placeholder="請輸入活動説明" required/></textarea>
 
-        <form class='profile-form'method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="profilebutton" type="submit">提交修改</button>
-        </form>
-        <div class="profile-link">
-            <p>需要修改密碼？<a href="{% url 'password_edit' %}">點此修改密碼</a></p>
-            <p>修改完成？<a href="{% url 'get_main_page' %}">回到首頁</a></p>
+        <label class="Firstname">活動地址/Event Venue</label>
+        <input type="text" name="venue" placeholder="請輸入活動地址" required/>
+
+        <label>活動時間/Event Date</label>
+        <input type="date" name="event_date" placeholder="請輸入活動時間"required/>
+
+        <label>報名期限/Registration Deadline</label>
+        <input type="date" name="registration_deadline" placeholder="請輸入活動時間"required/>
         </div>
-    </div>
+        <div class = "imageDiv">
+            <label>活動海報：</label>
+            <img src="/add.ico" alt = "add_button" id = "image" style="display:none; max-width:100%; height:auto; margin-top:10px;">
+            <input type="file" accept="image/jpeg, image/png, image/jpg" onchange = "previewImage(event)">
+
+        </div>
+
+
+    </div>        
+            <!--{% if form.errors %}-->
+            <div class="form-errors">
+                {{ form.errors }}
+            </div>
+            <!--{% endif %}-->
+        <div class="button-container">
+            <button class="registerbutton" type="submit">確認</button>
+            <button class="cancelbutton" onclick="window.location.href='{% url 'get_main_page' %}'">取消</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const imagePreview = document.getElementById("image");
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+        }
+
+        if(file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+</script>
+
 </body>
 </html>

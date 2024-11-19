@@ -59,14 +59,20 @@ def register_page(request):
 @csrf_exempt
 def get_add_event(request):
     if request.method == 'POST':
-        form = add_event_form(request.POST)
+        print(request.POST)  # 確保其他字段有數據
+        print(request.FILES)  # 確保文件字段有數據
+        form = add_event_form(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            print("File URL:", instance.image.url)  # 打印保存的圖片URL
             return redirect('get_main_page')  # Redirect after saving
+        else:
+            print(form.errors)  # 打印表單錯誤
     else:
         form = add_event_form()
 
-    return render(request, 'add_event.html', {'form': form})
+    return render(request, 'add_event_page.html', {'form': form})
+
 
 @login_required
 @csrf_exempt
@@ -98,5 +104,5 @@ def get_main_page(request):
 @csrf_exempt
 def get_event_detail(request, event_id):
     event = get_object_or_404(add_event, pk=event_id)
-
-    return render(request,'eventDetails.html', {'event': event})
+    
+    return render(request,'details.html', {'event': event})

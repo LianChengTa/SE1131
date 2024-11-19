@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'webpage',
 ]
 
@@ -51,6 +52,11 @@ MIDDLEWARE = [
 ]
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://1f7c-61-228-229-153.ngrok-free.app',
+    # 如果有其他的信任域名，這裡也可以添加
+]
 
 ROOT_URLCONF = 'SE1131.urls'
 
@@ -71,6 +77,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SE1131.wsgi.application'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'webpage/media')
+
 
 
 # Database

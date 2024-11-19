@@ -18,7 +18,9 @@ Including another URLconf
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView
+from django.conf import settings
 from .views import password_edit
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('login/',views.login_page,name='login'),
@@ -30,3 +32,4 @@ urlpatterns = [
     path('profile_edit/',views.get_profile_edit,name='profile_edit'),
     path('add_event/',views.get_add_event, name='add_event')
 ]
+

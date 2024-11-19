@@ -36,7 +36,8 @@ class profile_edit_form(UserChangeForm):
         model=user_account
         fields=['username','first_name','studentid']
         widgets={
-            'username': forms.TextInput(attrs={'readonly':'readonly'})
+            'username': forms.TextInput(attrs={'readonly':'readonly'}),
+            'id':'id_username_input',
         }
         help_texts = {
             'username': 'Username不能修改！',
@@ -59,7 +60,7 @@ class password_edit_form(PasswordChangeForm):
 class add_event_form(forms.ModelForm):
     class Meta:
         model = add_event
-        fields = ['title', 'description', 'venue', 'event_date', 'registration_deadline']
+        fields = ['title', 'description', 'venue', 'event_date', 'registration_deadline','image']
         widgets = {
             'event_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'registration_deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

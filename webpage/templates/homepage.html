@@ -36,6 +36,8 @@
         .event > img{
             float: left;
             margin:5px;
+            max-width: 150px;
+            max-height: 150px;
         }
 
         .header{
@@ -53,12 +55,14 @@
             width: 99%;
 
             }
-            .event > img{
+            .event img{
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
                 float:none;
                 padding: 5px;
+                max-width: 150px;
+                max-height: 150px;
                 }
 
             input{
@@ -87,28 +91,13 @@
         <input type = "text" placeholder = "search for event...">
         <button>Search!</button>
     </div>
-    <div>
-            <button class = "event" id="event{1}" >
-                <img src = "{% static '150x150.png' %}" alt = "event image">
-                <div>Event Title: Football Festival</div>
-                <div>Event Date: 31.11.2024</div>
-                <div>Venue: NTOU Field</div>
-            </button>
-    </div>
-    <div>
-            <button class = "event" id="event2">
-                <img src = "{% static '150x150.png'%}" alt = "event image">
-                <div>Event Title: Volleyball Festival</div>
-                <div>Event Date:31.11.2024</div>
-                <div>Venue: NTOU Indoor Court</div>
-            </button>
-    </div>
+    
     {% comment %} Output from database {% endcomment %}
     <div>
         {% for event in events %}
             <a href="{% url 'detail' event.id %}">
                 <button class = "event" id="event{{ event.id }}" >
-                    <img src = "{% static '150x150.png'%}" alt = "event image">
+                    <img src = "{{ event.image.url }}" alt = "event image">
                     <div>Event Title: {{event.title}}</div>
                     <div>Event Date:{{event.event_date|date:"d/m/Y" }}</div>
                     <div>Venue: {{event.venue}}</div>

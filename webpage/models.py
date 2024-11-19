@@ -14,6 +14,7 @@ class add_event(models.Model):
     venue = models.CharField(max_length=100, verbose_name="Event Venue")
     event_date = models.DateTimeField(verbose_name="Event Date")
     registration_deadline = models.DateTimeField(verbose_name="Registration Deadline")
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
 
     def __str__(self):
         return "%s, %s, %s, %s, %s" % (self.title, self.description, self.venue, self.event_date.strftime('%d/%m/%Y'),
