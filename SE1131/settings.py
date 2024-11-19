@@ -54,7 +54,7 @@ MIDDLEWARE = [
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://1f7c-61-228-229-153.ngrok-free.app',
+    'https://dcfb-61-228-229-153.ngrok-free.app',
     # 如果有其他的信任域名，這裡也可以添加
 ]
 
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'SE1131.wsgi.application'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'webpage/media')
-
+LOGIN_URL = '/webpage/login/'
 
 
 # Database

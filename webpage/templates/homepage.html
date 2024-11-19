@@ -81,10 +81,14 @@
         <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
         <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
         {% comment %} added button for add event {% endcomment %}
-        <button class="profile_button" onclick="add_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">加活動</button>
+        <button class="profile_button" onclick="add_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">添加活動</button>
         {% comment %}  {% endcomment %}
         <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
-        <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
+        {% if user.is_authenticated %}
+            <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
+        {% else %}
+            <button class="profile_button" onclick="login_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登入</button>
+        {% endif %}
         <p>NTOU Event Registration Website</p>    
     </div>
     <div>
@@ -100,7 +104,7 @@
                     <img src = "{{ event.image.url }}" alt = "event image">
                     <div>Event Title: {{event.title}}</div>
                     <div>Event Date:{{event.event_date|date:"d/m/Y" }}</div>
-                    <div>Venue: {{event.venue}}</div>
+                    <div>Location: {{event.venue}}</div>
                 </button>
             </a>
         {%endfor%}
@@ -132,6 +136,34 @@
             return cookieValue;
         }
         /////////////////////置頂，重要function
+
+
+        function login_func() {////////////////登出函數在此
+            if (isFetching) return;
+            isFetching = true;
+
+
+            fetch('/webpage/login/', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                isFetching = false; 
+                if (response.ok) {
+                    window.location.href = '/webpage/login/';
+                } else {
+                    console.error('Failed to login');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+
 
         function logout_func() {////////////////登出函數在此
             if (isFetching) return;

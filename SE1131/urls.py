@@ -23,5 +23,5 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webpage/',include('webpage.urls')),
-    path('',RedirectView.as_view(url='/webpage/login/',permanent=True))
+    path('',RedirectView.as_view(url='/webpage/mainpage/',permanent=True))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

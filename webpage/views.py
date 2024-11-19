@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import PasswordChangeView
+from django.conf import settings
+from django.core.files.base import ContentFile
 #added from .models
 from .models import add_event
 
@@ -55,7 +57,7 @@ def register_page(request):
 
     return render(request, 'register.html', {'form': form})
 
-#get_add_event
+@login_required
 @csrf_exempt
 def get_add_event(request):
     if request.method == 'POST':
@@ -63,7 +65,12 @@ def get_add_event(request):
         print(request.FILES)  # 確保文件字段有數據
         form = add_event_form(request.POST, request.FILES)
         if form.is_valid():
-            instance = form.save()
+            instance = form.save(commit=False)  # 延遲保存以便處理圖片
+            if not request.FILES.get('image'):  # 檢查是否有上傳圖片
+                # print(settings.STATICFILES_DIRS[0])
+                with open(settings.STATICFILES_DIRS[0] + '/ntou_logo.png', 'rb') as f:
+                    instance.image.save('default_image.jpg', ContentFile(f.read()), save=False)
+            instance.save()
             print("File URL:", instance.image.url)  # 打印保存的圖片URL
             return redirect('get_main_page')  # Redirect after saving
         else:
@@ -93,7 +100,7 @@ class password_edit(LoginRequiredMixin,PasswordChangeView):
     form_class= password_edit_form
 
 
-@login_required
+# @login_required
 @csrf_exempt
 def get_main_page(request):
     events = add_event.objects.all()

@@ -361,6 +361,10 @@
             if(file) {
                 reader.readAsDataURL(file);
             }
+            else{
+                const imagePreview=document.getElementById("image");
+                imagePreview.src="{% static ntou_logo.png %}";
+            }
         }
     
     </script>
