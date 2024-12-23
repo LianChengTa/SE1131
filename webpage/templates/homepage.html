@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
     <title>NTOU Event Registration Site</title>
     <style>
         p   {
@@ -77,37 +79,51 @@
     </style>
 </head>
 <body>
-    <div class = "header">
-        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
-        <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
-        {% comment %} added button for add event {% endcomment %}
-        <button class="profile_button" onclick="add_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">添加活動</button>
-        {% comment %}  {% endcomment %}
-        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
-        {% if user.is_authenticated %}
-            <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
-        {% else %}
-            <button class="profile_button" onclick="login_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登入</button>
-        {% endif %}
-        <p>NTOU Event Registration Website</p>    
-    </div>
-    <div>
-        <input type = "text" placeholder = "search for event...">
-        <button>Search!</button>
-    </div>
-    
-    {% comment %} Output from database {% endcomment %}
-    <div>
-        {% for event in events %}
-            <a href="{% url 'detail' event.id %}">
-                <button class = "event" id="event{{ event.id }}" >
-                    <img src = "{{ event.image.url }}" alt = "event image">
-                    <div>Event Title: {{event.title}}</div>
-                    <div>Event Date:{{event.event_date|date:"d/m/Y" }}</div>
-                    <div>Location: {{event.venue}}</div>
-                </button>
-            </a>
-        {%endfor%}
+    <div id="event-list">
+        <div class = "header">
+            <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
+            <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
+            {% comment %} added button for add event {% endcomment %}
+            {% if is_teacher %}
+            <button class="profile_button" onclick="add_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">添加活動</button>
+            {% endif %}
+            
+            {% if not is_teacher %}
+            <button class="profile_button" onclick="get_student_event()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">已參與的活動列表</button>
+            {% endif %}
+            {% comment %}  {% endcomment %}
+            
+            <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
+            {% if user.is_authenticated %}
+                <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
+            {% else %}
+                <button class="profile_button" onclick="login_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登入</button>
+            {% endif %}
+            <p>NTOU Event Registration Website</p>    
+        </div>
+
+        <form id="search-form" onsubmit="return false;">
+            <div>
+                <input type="text" id="search-input" name="search" placeholder="Search for event..." value="{{ search_query }}">
+                <button type="button" onclick="searchEvent()">Search!</button> 
+                <button type="button" onclick="clearSearch()">Clear Search</button>
+            </div>
+        </form>
+        
+        <div id="event-results">
+            {% for event in events %}
+                <a href="{% url 'detail' event.id %}">
+                    <button class="event" id="event{{ event.id }}">
+                        <img src="{{ event.image.url }}" alt="event image">
+                        <div>Event Title: {{ event.title }}</div>
+                        <div>Event Date: {{ event.event_date|date:"d/m/Y" }}</div>
+                        <div>Location: {{ event.venue }}</div>
+                    </button>
+                </a>
+            {% endfor %}
+        </div>
+        
+
     </div>
 
     <script>
@@ -234,7 +250,6 @@
             });
         }
 
-        {% comment %} add event function {% endcomment %}
         function add_event(){///////////獲取更改個人資料頁面的函數
             if (isFetching) return; // 如果已经有请求在处理中，直接返回
             isFetching = true;
@@ -255,6 +270,57 @@
                 console.error('Error:', error);
             });
         }
+
+
+        function get_student_event(){///////////獲取更改個人資料頁面的函數
+            if (isFetching) return; // 如果已经有请求在处理中，直接返回
+            isFetching = true;
+
+            fetch('/webpage/get_student_event/', {
+                method: 'GET', // 默认是GET请求
+            })
+            .then(response => {
+                isFetching = false; // 请求结束后将标记恢复为false
+                if (response.ok) {
+                    window.location.href = '/webpage/get_student_event/';
+                } else {
+                    console.error('Failed to fetch get_student_event page');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+
+        function searchEvent() {
+            const searchQuery = document.getElementById('search-input').value;  // 獲取輸入的搜索詞
+
+            fetch(`/webpage/search_events/?search=${searchQuery}`, {
+                method: 'GET',
+            })
+            .then(response => response.text())  // 獲取返回的 HTML
+            .then(data => {
+                document.getElementById('event-results').innerHTML = data;  // 只更新活動列表部分
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("搜索過程中發生錯誤");
+            });
+        }
+
+
+        // 清除搜索
+        function clearSearch() {
+            document.getElementById('search-input').value = '';  // 清空輸入框
+            searchEvent();  // 重新觸發搜索
+        }
+
+
+        // 每次用戶輸入時自動觸發搜索
+        document.getElementById('search-input').addEventListener('input', function() {
+            searchEvent();  // 每次輸入時自動執行搜索
+        });
 
 
     </script>

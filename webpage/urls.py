@@ -30,6 +30,11 @@ urlpatterns = [
     path('logout/',LogoutView.as_view(next_page='login'),name='logout'),
     path('password_edit/',password_edit.as_view(),name="password_edit"),
     path('profile_edit/',views.get_profile_edit,name='profile_edit'),
-    path('add_event/',views.get_add_event, name='add_event')
+    path('add_event/',views.get_add_event, name='add_event'),
+    path('event/<int:event_id>/delete/', views.delete_event, name='delete_event'),
+    path('get_student_event/',views.get_student_event,name='student_event'),
+    path('participate_event/<int:event_id>/', views.participate_event, name='participate_event'),
+    path('edit_event/<int:event_id>/', views.edit_event, name='edit_event'),
+    path('cancel_registration/<int:event_id>/', views.cancel_registration, name='cancel_registration'),
+    path('search_events/', views.search_events, name='search_events'),
 ]
-

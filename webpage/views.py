@@ -11,8 +11,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.views import PasswordChangeView
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.http import JsonResponse
+import json
 #added from .models
-from .models import add_event
+from .models import add_event, user_account
 
 
 @csrf_exempt
@@ -21,6 +23,8 @@ def login_page(request):
         form = loginform(data=request.POST)
         print('Request data:', request.POST)  # 打印请求数据
         print(form)
+         
+        
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -44,10 +48,15 @@ def login_page(request):
 def register_page(request):
     if request.method == 'POST':
         form = registerform(request.POST)
+        #(teacher or student)
+        identity = request.POST.get('identity', None)
+        print('Selected identity:', identity)
+        is_staff = True if identity == 'teacher' else False
+        
         print(request.POST)
         print(form)
         if form.is_valid():
-            form.save()
+            form.save(is_staff=is_staff)
             messages.success(request, '賬號創建成功！你現在可以登入。')
             return redirect('login')  # 註冊成功後自動跳轉到登入頁面
         else:
@@ -60,12 +69,13 @@ def register_page(request):
 @login_required
 @csrf_exempt
 def get_add_event(request):
+
     if request.method == 'POST':
-        print(request.POST)  # 確保其他字段有數據
-        print(request.FILES)  # 確保文件字段有數據
         form = add_event_form(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save(commit=False)  # 延遲保存以便處理圖片
+            # Assign the logged-in user to the event
+            instance.user = request.user
             if not request.FILES.get('image'):  # 檢查是否有上傳圖片
                 # print(settings.STATICFILES_DIRS[0])
                 with open(settings.STATICFILES_DIRS[0] + '/ntou_logo.png', 'rb') as f:
@@ -103,13 +113,103 @@ class password_edit(LoginRequiredMixin,PasswordChangeView):
 # @login_required
 @csrf_exempt
 def get_main_page(request):
-    events = add_event.objects.all()
-    return render(request,'homepage.html', {'events': events})
+    is_teacher = request.user.is_staff
+    if is_teacher:
+        events = add_event.objects.filter(user=request.user)
+    else:
+        events = add_event.objects.all()
+        
+    search_query = request.GET.get('search', '')
+    if search_query:
+        events = events.filter(title__icontains=search_query)
+
+    return render(request,'homepage.html', {'events': events, 'is_teacher':is_teacher, 'search_query': search_query})
 
 
 @login_required
 @csrf_exempt
 def get_event_detail(request, event_id):
-    event = get_object_or_404(add_event, pk=event_id)
+    event = get_object_or_404(add_event, id=event_id)
+    has_participated = event.participants.filter(id=request.user.id).exists()
     
-    return render(request,'details.html', {'event': event})
+    return render(request, 'details.html', {
+        'event': event,
+        'is_teacher': request.user.is_staff,  # 假設有這個屬性來判斷是否是教師
+        'has_participated': has_participated,
+    })
+@login_required
+@csrf_exempt
+def delete_event(request, event_id):
+    event = get_object_or_404(add_event, id=event_id)
+    
+    if request.method == 'POST':
+        event.delete()  # 刪除活動
+        
+        # 返回成功的 JsonResponse
+        return JsonResponse({'success': True, 'message': '活動已成功刪除。', 'redirect_url': '/webpage/mainpage'})  # 返回重定向 URL
+    
+    return JsonResponse({'success': False, 'error': '無效的請求'}, status=400)
+    
+@login_required
+@csrf_exempt
+def get_student_event(request):
+    # 获取当前登录的用户
+    user = request.user
+
+    # 查询用户已参与的活动
+    participated_events = add_event.objects.filter(participants=user)
+
+    return render(request, 'event_list_page.html', {'events': participated_events})
+
+
+
+@login_required
+@csrf_exempt
+def participate_event(request, event_id):
+    event = get_object_or_404(add_event, id=event_id)
+    if request.method == 'POST':
+        event.participants.add(request.user)
+        event.save()
+        return JsonResponse({'success': True, 'message': '您已成功報名此活動！'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_required
+@csrf_exempt
+def edit_event(request, event_id):
+    event = get_object_or_404(add_event, id=event_id)
+
+    if request.method == 'POST':
+        form = add_event_form(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()  # 保存表單，這會處理圖片的更新
+            return redirect('detail', event_id=event.id)
+    else:
+        form = add_event_form(instance=event)
+
+    return render(request, 'edit_event.html', {'form': form, 'event': event})
+
+@login_required
+@csrf_exempt
+def cancel_registration(request, event_id):
+    event = get_object_or_404(add_event, id=event_id)
+    if request.method == 'POST':
+        event.participants.remove(request.user)
+        event.save()
+        return JsonResponse({'success': True, 'message': '取消報名成功'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+@csrf_exempt
+def search_events(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        # 根據活動標題進行模糊匹配
+        events = add_event.objects.filter(title__icontains=search_query)
+    else:
+        events = add_event.objects.all()  # 沒有搜索詞時顯示所有活動
+
+    # 只返回活動部分的 HTML
+    return render(request, 'event_list.html', {'events': events})
+

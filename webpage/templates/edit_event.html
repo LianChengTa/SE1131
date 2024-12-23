@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<!--{% load static %}-->
+{% load static %}
 <html>
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="icon" href="{% static 'favicon.ico' %}">
-    <title>NTOU 海洋大學活動報名系統    </title>
+    <title>NTOU 海洋大學活動報名系統 - 修改活動</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
         *{box-sizing:border-box;
-                    margin:0;
-                    padding:0;}
+            margin:0;
+            padding:0;}
                     
         body{
-                font-family: Arial,sans-serif;
+            font-family: Arial,sans-serif;
             font-size: 2em;
             margin:0;
             padding:0;
@@ -27,7 +27,6 @@
             align-items:center;
             background-color:#1C39C5;
             padding: 10px;
-
         }
 
         .header .title{
@@ -83,10 +82,8 @@
         }
 
         .header button:hover::after{
-           width:100%
+           width:100%;
         }
-
-        ---------
 
         .title h2{
             color:#1E3A78;
@@ -98,13 +95,11 @@
             align-items:center;
         }
         
-
         .registerh2{
             color:#1E3A78;
             margin-top:0px;
             font-weight:bold;
             font-size:38px;
-
         }
 
         .underline{
@@ -122,20 +117,20 @@
             box-shadow:0 0 10px rgba(0, 0, 0, 0.2);
             padding:35px 60px;
             width: 80%;
+            display:flex;
+            flex-direction: column;
             text-align:center;
             justify-content: space-between;
             height:auto;
-            
         }
 
         .register-form{
             display:flex;
             padding:10px;
-            flex-direction:row;
+            flex-direction:column;
             align-items: center;
             max-width: 100%;
             margin-top:5px;
-            
         }
 
         .register-form label{
@@ -146,7 +141,6 @@
             font-weight:normal;
             text-align: left;
             float:left;
-            
         }
 
         .register-form .description{
@@ -161,7 +155,6 @@
             height:80px;
             resize: vertical;
             float:left;
-
         }
 
         .register-form input{
@@ -175,9 +168,7 @@
             margin-bottom:15px;
             height:43px;
             float:left;
-           
         }
-        
 
         .register-form input:focus{
             outline:none;
@@ -190,11 +181,9 @@
             display:flex;
             gap:30px;
             margin-top:15px;
-
         }
 
         .registerbutton{
-            
             padding:10px;
             background-color: #3b74ce;
             color:white;
@@ -224,11 +213,13 @@
             text-decoration: none;
             color:white;
         }
+        
         ul {
             list-style-type: none;
             padding: 0;
             margin: 10px 0;
         }
+
         ul li {
             background-color: #f8d7da;
             color: #721c24;
@@ -237,6 +228,7 @@
             border: 1px solid #f5c6cb;
             border-radius: 5px;
         }
+
         .messages {
             list-style-type: none;
             padding: 0;
@@ -258,99 +250,143 @@
             color: blue;
         }
 
-        .image{
-            
+        .container {
+            display: flex;
+            justify-content: space-between; /* 控制子项之间的间距 */
+            align-items: flex-start; /* 对齐顶部 */
         }
 
-        .imageDiv{
-            background-color: pink;
-            width:25%;
-            float:right;
-            
+        .container > div {
+            flex: 1; /* 设置子项的宽度 */
+            margin: 10px; /* 添加一些间距 */
+        }
+
+        .imageDiv {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .imageDiv img {
+            max-width: 100%; /* 确保图片不会超出容器 */
+            height: auto;
+            margin-bottom: 10px;
         }
 
         .register-form div{
             width:70%;
         }
-
-
-
     </style>
 </head>
 
 <body>
 
-    <div class = "header">
-        <div class="logo"><img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" onclick="window.location.href='{% url 'get_main_page' %}'" style = "height:55px; width: 55px;"></div> 
-        <div class="title">Event Application Form </div><div class="chinese">添加活動表</div>
+    <div class="header">
+        <div class="logo"><img src="{% static 'ntou_logo.png' %}" alt="ntou logo" onclick="window.location.href='{% url 'get_main_page' %}'" style="height:55px; width: 55px;"></div> 
+        <div class="title">Event Application Form </div><div class="chinese">修改活動表</div>
         <div class="mainpage"><button class="profile_button" onclick="window.location.href='{% url 'get_main_page' %}'" >回到首頁</button></div> 
-        <div class="profile"><button class="profile_button" onclick="profile_edit()" >修改個人資料</button></div> 
-        <div class="logout"><button class="profile_button" onclick="logout_func()" >登出</button></div>
-        
+        <div class="profile"><button class="profile_button" onclick="window.location.href='{% url 'detail' event.id %}'" >活動詳情頁面</button></div> 
+        <div class="logout"><button class="profile_button" onclick="window.location.href='logout_func()'" >登出</button></div>
     </div>    
 
     <div class="register-container">
-    <h2 class="registerh2">添加活動表</h2>
-    <div class="underline"></div>
+        <h2 class="registerh2">修改活動表</h2>
+        <div class="underline"></div>
     
-    <!--{% comment %} url add_event {% endcomment %}-->
-    <div>
-    <form class="register-form" action="{% url 'add_event' %}" method="POST">
-        <div>
-        <label>活動題目/Event Title</label>
-        <!--{% comment %} use name = "title" for the name in the database {% endcomment %}-->
-        <input type='text' name="title" placeholder="請輸入活動題目" required/>
-
-        <label>活動説明/Event Description</label>
-        <textarea class="description" name="description" placeholder="請輸入活動説明" required/></textarea>
-
-        <label class="Firstname">活動地址/Event Venue</label>
-        <input type="text" name="venue" placeholder="請輸入活動地址" required/>
-
-        <label>活動時間/Event Date</label>
-        <input type="date" name="event_date" placeholder="請輸入活動時間"required/>
-
-        <label>報名期限/Registration Deadline</label>
-        <input type="date" name="registration_deadline" placeholder="請輸入活動時間"required/>
-        </div>
-        <div class = "imageDiv">
-            <label>活動海報：</label>
-            <img src="/add.ico" alt = "add_button" id = "image" style="display:none; max-width:100%; height:auto; margin-top:10px;">
-            <input type="file" accept="image/jpeg, image/png, image/jpg" onchange = "previewImage(event)">
-
-        </div>
-
-
-    </div>        
-            <!--{% if form.errors %}-->
-            <div class="form-errors">
-                {{ form.errors }}
+        <form class="register-form" action="{% url 'edit_event' event.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container">
+                <div>
+                    <label>活動題目/Event Title</label>
+                    <input type="text" name="title" value="{{ event.title }}" required />
+            
+                    <label>活動説明/Event Description</label>
+                    <textarea class="description" name="description" required>{{ event.description }}</textarea>
+            
+                    <label class="Firstname">活動地址/Event Venue</label>
+                    <input type="text" name="venue" value="{{ event.venue }}" required />
+            
+                    <label>活動時間/Event Date</label>
+                    <input type="datetime-local" name="event_date" value="{{ event.event_date|date:'Y-m-d\TH:i' }}" required />
+            
+                    <label>報名期限/Registration Deadline</label>
+                    <input type="datetime-local" name="registration_deadline" value="{{ event.registration_deadline|date:'Y-m-d\TH:i' }}" required />
+                </div>
+            
+                <div class="imageDiv">
+                    <label>活動海報：</label>
+                    <img src="{{ event.image.url }}" id="image" alt="event poster" style="max-width:100%; height:auto; margin-top:10px;" />
+                    <input type="file" name="image" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event)" />
+                </div>
             </div>
-            <!--{% endif %}-->
-        <div class="button-container">
-            <button class="registerbutton" type="submit">確認</button>
-            <button class="cancelbutton" onclick="window.location.href='{% url 'get_main_page' %}'">取消</button>
-        </div>
-    </form>
-</div>
+    
+            <div class="button-container">
+                <button class="registerbutton" type="submit">保存更改</button>
+                <button class="cancelbutton" type="button" onclick="window.location.href='{% url 'get_main_page' %}'">取消</button>
+            </div>
+        </form>
+    </div>
 
-<script>
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+    <script>
 
-        reader.onload = function(e) {
-            const imagePreview = document.getElementById("image");
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = 'block';
+        let isFetching = false;////////置頂，重要的參數
+        //////////////////////置頂
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        /////////////////////置頂，重要function
+
+        function logout_func() {////////////////登出函數在此
+            if (isFetching) return;
+            isFetching = true;
+
+
+            fetch('/webpage/logout/', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                isFetching = false; 
+                if (response.ok) {
+                    window.location.href = '/webpage/login/';
+                } else {
+                    console.error('Failed to logout');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const imagePreview = document.getElementById("image");
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
         }
 
-        if(file) {
-            reader.readAsDataURL(file);
-        }
-    }
-
-</script>
-
+    </script>
 </body>
 </html>

@@ -54,7 +54,7 @@ MIDDLEWARE = [
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://dcfb-61-228-229-153.ngrok-free.app',
+    'https://6a2f-61-228-207-76.ngrok-free.app',
     # 如果有其他的信任域名，這裡也可以添加
 ]
 

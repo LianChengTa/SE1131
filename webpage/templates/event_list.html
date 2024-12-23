@@ -1,0 +1,12 @@
+{% for event in events %}
+    <a href="{% url 'detail' event.id %}">
+        <button class="event" id="event{{ event.id }}">
+            <img src="{{ event.image.url }}" alt="event image">
+            <div>Event Title: {{ event.title }}</div>
+            <div>Event Date: {{ event.event_date|date:"d/m/Y" }}</div>
+            <div>Location: {{ event.venue }}</div>
+        </button>
+    </a>
+{% empty %}
+    <p>No events found.</p>
+{% endfor %}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NTOU Event Registration Site</title>
+        <style>
+            p   {
+                text-align: center;
+            }
+    
+            body{
+                font-style: Helvetica;
+                font-size: 2em;
+                margin: 0px;
+            }
+    
+            input{
+                height:1.75em;
+                margin-left: 5px;
+            }
+            
+            .event {
+                font-family: inherit;
+                background-color: lightblue;
+                font-size: 1em;
+                width: 99%;
+                text-align: left;
+                margin-top: 5px;
+                margin-bottom: 2.5px;
+                margin-left: 5px;
+                
+            }
+    
+            .event > img{
+                float: left;
+                margin:5px;
+                max-width: 150px;
+                max-height: 150px;
+            }
+    
+            .header{
+                width:100%;
+                color:white;
+                background-color: #313f48;
+                padding: 20px;
+            }
+    
+            @media only screen and (max-width: 600px){
+                .event {
+                font-family: inherit;
+                background-color: lightblue;
+                font-size: 1em;
+                width: 99%;
+    
+                }
+                .event img{
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    float:none;
+                    padding: 5px;
+                    max-width: 150px;
+                    max-height: 150px;
+                    }
+    
+                input{
+                height:1.75em;
+                display:block;
+                margin-top:5px;
+                margin-left:auto;
+                margin-right:auto;
+                }
+            }
+            
+        </style>
+    </head>
+<body>
+    <div class = "header">
+        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:left;margin-left:-18px;">
+        <button class="profile_button" onclick="profile_edit()" style = "height: 100px; width: 100px;float:left;margin-left:18px;">修改個人資料</button>
+        
+        
+        {% if not is_teacher %}
+        <button class="profile_button" onclick="window.location.href='{% url 'get_main_page' %}'" style = "height: 100px; width: 100px;float:left;margin-left:18px;">回到首頁</button>
+        {% endif %}
+        {% comment %}  {% endcomment %}
+        
+        <img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" style = "height: 100px; width: 100px;float:right;margin-right:22px;">
+        {% if user.is_authenticated %}
+            <button class="profile_button" onclick="logout_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登出</button>
+        {% else %}
+            <button class="profile_button" onclick="login_func()" style = "height: 100px; width: 100px;float:right;margin-right:22px;">登入</button>
+        {% endif %}
+        <p>已參與活動列表</p>    
+    </div>
+    <h1></h1>
+    <ul>
+        {% if events %}
+            <div>
+                {% for event in events %}
+                    <a href="{% url 'detail' event.id %}">
+                        <button class = "event" id="event{{ event.id }}" >
+                            <img src = "{{ event.image.url }}" alt = "event image">
+                            <div>Event Title: {{event.title}}</div>
+                            <div>Event Date:{{event.event_date|date:"d/m/Y" }}</div>
+                            <div>Location: {{event.venue}}</div>
+                        </button>
+                    </a>
+                {%endfor%}
+            </div>
+        {% else %}
+            <p>No Events Found</p>
+        {% endif %}
+    </ul>
+
+    <script>
+        let isFetching = false;////////置頂，重要的參數
+        //////////////////////置頂
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function logout_func() {////////////////登出函數在此
+            if (isFetching) return;
+            isFetching = true;
+
+
+            fetch('/webpage/logout/', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                isFetching = false; 
+                if (response.ok) {
+                    window.location.href = '/webpage/login/';
+                } else {
+                    console.error('Failed to logout');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

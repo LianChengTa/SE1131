@@ -25,6 +25,14 @@ class registerform(UserCreationForm):
     class Meta:
         model = user_account
         fields = ['username', 'first_name', 'studentid', 'password1', 'password2']
+    
+    #for role    
+    def save(self, commit=True, is_staff=False):
+        user = super().save(commit=False)
+        user.is_staff = is_staff
+        if commit:
+            user.save()
+        return user
 
 
 class profile_edit_form(UserChangeForm):
@@ -65,5 +73,11 @@ class add_event_form(forms.ModelForm):
             'event_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'registration_deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
-
     
+    def save(self, commit=True, user=None):
+        event = super().save(commit=False)
+        if user:
+            event.user = user
+        if commit:
+            event.save()
+        return event

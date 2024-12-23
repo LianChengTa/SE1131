@@ -15,7 +15,9 @@ class add_event(models.Model):
     event_date = models.DateTimeField(verbose_name="Event Date")
     registration_deadline = models.DateTimeField(verbose_name="Registration Deadline")
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    participants = models.ManyToManyField(user_account, related_name='participated_events', blank=True)
+    user = models.ForeignKey(user_account, on_delete=models.CASCADE, related_name='events', null=True, blank=True)
+
 
     def __str__(self):
-        return "%s, %s, %s, %s, %s" % (self.title, self.description, self.venue, self.event_date.strftime('%d/%m/%Y'),
-                                       self.registration_deadline.strftime('%d/%m/%Y'))
+        return self.title

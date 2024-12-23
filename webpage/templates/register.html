@@ -222,6 +222,19 @@
             color: blue;
         }
 
+        .radio-container {
+            display: inline-flex;
+            margin-top:-25px ;
+            gap: -15px;
+            align-items: center;
+        }
+
+        .radio-container label {
+            display: flex;
+            align-items: center;
+            margin-left: ;
+        }
+
 
     </style>
 </head>
@@ -256,6 +269,12 @@
 
     <label for="Password2"style="margin-left:-53%;">確認密碼/Confirm Password</label>
     <input type='password' id="Password2" name="password2" placeholder="請輸入你的密碼" required/>
+
+    <div class="radio-container">
+        <label style="margin-left:-195px">你是誰/Who are You?</label>
+        <label><input type="radio" name="identity" value="teacher" style="margin-top:15px; margin-left:430%" required /> Teacher</label>
+        <label><input type="radio" name="identity" value="student" style="margin-top:15px; margin-left:850%"required /> Student</label>
+    </div>
 
 
     {% if form.errors %}
