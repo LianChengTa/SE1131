@@ -21,19 +21,19 @@ from .models import add_event, user_account
 def login_page(request):
     if request.method == 'POST':
         form = loginform(data=request.POST)
-        print('Request data:', request.POST)  # 打印请求数据
-        print(form)
+        # print('Request data:', request.POST)  # 打印请求数据
+        # print(form)
          
         
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            print('Attempting to log in...')
+            # print('Attempting to log in...')
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 messages.success(request, '登入成功')
-                print('Login successful!')
+                # print('Login successful!')
                 return redirect('get_main_page')
             else:
                 messages.error(request, "登入失敗")
@@ -50,11 +50,11 @@ def register_page(request):
         form = registerform(request.POST)
         #(teacher or student)
         identity = request.POST.get('identity', None)
-        print('Selected identity:', identity)
+        # print('Selected identity:', identity)
         is_staff = True if identity == 'teacher' else False
         
-        print(request.POST)
-        print(form)
+        # print(request.POST)
+        # print(form)
         if form.is_valid():
             form.save(is_staff=is_staff)
             messages.success(request, '賬號創建成功！你現在可以登入。')
@@ -91,39 +91,53 @@ def get_add_event(request):
     return render(request, 'add_event_page.html', {'form': form})
 
 
+
 @login_required
 @csrf_exempt
 def get_profile_edit(request):
     if request.method == 'POST':
         form = profile_edit_form(request.POST, instance=request.user)
+        # print(form)
         if form.is_valid():
             form.save()
+            # print(f"Updated first_name: {request.user.first_name}")  # Debugging print
+            messages.success(request, '個人資料已成功更新！')
             return redirect('profile_edit')
     else:
-        form=profile_edit_form(instance=request.user)
-    return render(request,'profile_edit.html',{'form':form})
-
-@method_decorator(csrf_exempt,name='dispatch')
-class password_edit(LoginRequiredMixin,PasswordChangeView):
-    template_name='password_edit.html'
-    success_url=reverse_lazy('profile_edit')
-    form_class= password_edit_form
+        # print(f"Form errors: {form.errors}") 
+        form = profile_edit_form(instance=request.user)
+    
+    return render(request, 'profile_edit.html', {'form': form})
 
 
-# @login_required
+@method_decorator(csrf_exempt, name='dispatch')
+class password_edit(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'password_edit.html'
+    success_url = reverse_lazy('profile_edit')
+    form_class = password_edit_form
+
+    def form_valid(self, form):
+        # 添加成功提示消息
+        messages.success(self.request, '密碼已成功更新！')
+        return super().form_valid(form)
+
+
 @csrf_exempt
 def get_main_page(request):
     is_teacher = request.user.is_staff
-    if is_teacher:
-        events = add_event.objects.filter(user=request.user)
-    else:
-        events = add_event.objects.all()
-        
-    search_query = request.GET.get('search', '')
-    if search_query:
+    
+    events = add_event.objects.all()
+
+    # 獲取搜索查詢
+    search_query = request.GET.get('search', None)
+    if search_query: 
         events = events.filter(title__icontains=search_query)
 
-    return render(request,'homepage.html', {'events': events, 'is_teacher':is_teacher, 'search_query': search_query})
+    return render(request, 'homepage.html', {
+        'events': events,
+        'is_teacher': is_teacher,
+        'search_query': search_query or '',
+    })
 
 
 @login_required

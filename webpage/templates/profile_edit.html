@@ -338,6 +338,13 @@
     <div class = "profile-container">
         <h2>個人資料修改</h2>
 
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <p style="color: green;">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <form class='profile-form'method="post">
             {% csrf_token %}

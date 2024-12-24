@@ -22,6 +22,23 @@
             height:1.75em;
             margin-left: 5px;
         }
+        .search{
+            float:right;
+            margin-right:0.5%;
+            border-radius:3px;
+            font-weight:bold;
+        }
+
+        .search button{
+            background-color:#1E90FF;
+            color:white; 
+            border-color: transparent;
+        }
+
+        .search button:hover{
+            background-color:#4169E1;
+            cursor:pointer;
+        }
         
         .event {
             font-family: inherit;
@@ -103,7 +120,7 @@
         </div>
 
         <form id="search-form" onsubmit="return false;">
-            <div>
+            <div class="search">
                 <input type="text" id="search-input" name="search" placeholder="Search for event..." value="{{ search_query }}">
                 <button type="button" onclick="searchEvent()">Search!</button> 
                 <button type="button" onclick="clearSearch()">Clear Search</button>

@@ -157,6 +157,27 @@
                 console.error('Error:', error);
             });
         }
+
+        function profile_edit(){///////////獲取更改個人資料頁面的函數
+            if (isFetching) return; // 如果已经有请求在处理中，直接返回
+            isFetching = true;
+
+            fetch('/webpage/profile_edit/', {
+                method: 'GET', // 默认是GET请求
+            })
+            .then(response => {
+                isFetching = false; // 请求结束后将标记恢复为false
+                if (response.ok) {
+                    window.location.href = '/webpage/profile_edit/';
+                } else {
+                    console.error('Failed to fetch profile_edit page');
+                }
+            })
+            .catch(error => {
+                isFetching = false;
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>

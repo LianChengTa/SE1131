@@ -283,15 +283,11 @@
         <div class="logo"><img src = "{% static 'ntou_logo.png' %}" alt = "ntou logo" onclick="window.location.href='{% url 'get_main_page' %}'" style = "height:55px; width: 55px;"></div> 
         <div class="title">Event Information </div><div class="chinese">活動資訊</div>
         <div class="mainpage"><button class="profile_button" onclick="window.location.href='{% url 'get_main_page' %}'" >回到首頁</button></div> 
-        <div class="profile"><button class="profile_button" onclick="window.location.href = '/webpage/profile_edit/'" >修改個人資料</button></div>
         <div class="logout"><button class="profile_button" onclick="window.location.href = '/webpage/login/'" >登出</button></div>
         
     </div>    
     
-    <div class="search">
-        <input type = "text" placeholder = "search for event... ">
-        <button>Search</button>
-    </div>
+    
     <br><br><br><br>
 
     <form id="cancelForm" class="cancelForm" method="POST" action="{% url 'cancel_registration' event.id %}">
