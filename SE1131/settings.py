@@ -99,11 +99,13 @@ DATABASES = {
 }
 
 # 在 Heroku 环境下覆盖默认配置
-DATABASES['default'] = dj_database_url.config(
-    default=os.getenv('DATABASE_URL', ''),
-    conn_max_age=600,
-    ssl_require=True
-)
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgres://accse1131:se1131@172.17.69.155:5432/se1131',
+        conn_max_age=600,
+    )
+}
 
 
 # Password validation
