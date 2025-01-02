@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,12 +91,19 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'se1131',
-        'USER': 'accse1131',#賬號不能用大寫，會被强制改成小寫然後發生很多神奇的問題
+        'USER': 'accse1131',
         'PASSWORD': 'se1131',
-        'HOST':'172.17.69.155',
-        'POST':'5432',
+        'HOST': '172.17.69.155',
+        'PORT': '5432',
     }
 }
+
+# 在 Heroku 环境下覆盖默认配置
+DATABASES['default'] = dj_database_url.config(
+    default=os.getenv('DATABASE_URL', ''),
+    conn_max_age=600,
+    ssl_require=True
+)
 
 
 # Password validation
