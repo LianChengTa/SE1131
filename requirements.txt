@@ -4,3 +4,4 @@ Django==5.0.7
 psycopg2-binary
 gunicorn
 Pillow
+dj_database_url
