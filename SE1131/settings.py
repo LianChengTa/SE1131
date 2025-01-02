@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,14 +97,7 @@ DATABASES = {
     }
 }
 
-# 在 Heroku 环境下覆盖默认配置
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://accse1131:se1131@172.17.69.155:5432/se1131',
-        conn_max_age=600,
-    )
-}
 
 
 # Password validation
