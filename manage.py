@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+# manage.py
 import os
 import sys
-
+from django.core.wsgi import get_wsgi_application
 
 def main():
     """Run administrative tasks."""
@@ -17,6 +16,9 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-
 if __name__ == '__main__':
     main()
+
+# Add the following lines to expose the WSGI application handler
+application = get_wsgi_application()
+handler = application

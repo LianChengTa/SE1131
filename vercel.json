@@ -3,11 +3,7 @@
   "builds": [
     {
       "src": "manage.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxDuration": 10,
-        "cmd": "gunicorn se1131.wsgi:application"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
