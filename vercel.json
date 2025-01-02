@@ -4,7 +4,10 @@
     {
       "src": "manage.py",
       "use": "@vercel/python",
-      "config": { "maxDuration": 10 }
+      "config": {
+        "maxDuration": 10,
+        "cmd": "gunicorn myproject.wsgi:application"
+      }
     }
   ],
   "routes": [
