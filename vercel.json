@@ -6,7 +6,7 @@
       "use": "@vercel/python",
       "config": {
         "maxDuration": 10,
-        "cmd": "gunicorn myproject.wsgi:application"
+        "cmd": "gunicorn se1131.wsgi:application"
       }
     }
   ],

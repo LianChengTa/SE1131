@@ -88,14 +88,11 @@ LOGIN_URL = '/webpage/login/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'se1131',
-        'USER': 'accse1131',
-        'PASSWORD': 'se1131',
-        'HOST': '172.17.69.155',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 
